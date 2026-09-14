@@ -1,3 +1,5 @@
+from os import environ
+from os.path import join
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'channels',
     'apps'
 ]
@@ -93,6 +96,10 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATIC_ROOT = join(BASE_DIR, 'static')
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = join(BASE_DIR, 'media')
 
 
 
@@ -105,13 +112,27 @@ MAILERS = {
 ASGI_APPLICATION = "root.asgi.application"
 
 
-CHANNEL_LAYERS = {
-    # "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}
-
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+# Set CHANNEL_LAYER=memory to run without Redis (single process only).
+if environ.get("CHANNEL_LAYER") == "memory":
+    CHANNEL_LAYERS = {
+        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [(environ.get("REDIS_HOST", "10.40.12.44"),
+                           int(environ.get("REDIS_PORT", 6379)))],
+            },
         },
-    },
+    }
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ]
 }

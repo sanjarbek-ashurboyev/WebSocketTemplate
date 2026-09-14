@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+class ChatConfig(AppConfig):
+    name = "apps"
 
-class AppsConfig(AppConfig):
-    name = 'apps'
+    def ready(self):
+        import apps.signals  # noqa
