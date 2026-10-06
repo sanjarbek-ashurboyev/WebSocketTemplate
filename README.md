@@ -1,3 +1,17 @@
+# WebSocketTemplate
+
+[![Tests](https://github.com/sanjarbek-ashurboyev/WebSocketTemplate/actions/workflows/tests.yml/badge.svg)](https://github.com/sanjarbek-ashurboyev/WebSocketTemplate/actions/workflows/tests.yml)
+
+A starter for real-time Django apps with Channels, Daphne and Redis. The example app is a
+live student leaderboard: every connected browser gets the new totals the moment a score
+changes. Below is the step-by-step setup guide.
+
+```bash
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py test        # CHANNEL_LAYER=memory runs without Redis
+```
+
 ## 1. Install
 
 ```bash
