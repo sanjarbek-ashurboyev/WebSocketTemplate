@@ -6,11 +6,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-SECRET_KEY = 'django-insecure-%duk2nc1!gw-7w)n5$dgc0#+h+z&c%%sz1=@mx8*6w!w=@(3ui'
+# Demo project: runs out of the box with DEBUG on and a throwaway key.
+# For any real deployment set DJANGO_DEBUG=False, DJANGO_SECRET_KEY and DJANGO_ALLOWED_HOSTS.
+DEBUG = environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-DEBUG = True
+SECRET_KEY = environ.get('DJANGO_SECRET_KEY', '')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise RuntimeError('DJANGO_SECRET_KEY must be set when DEBUG is off.')
+    SECRET_KEY = 'django-insecure-local-development-only'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h.strip() for h in environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 
 
@@ -122,7 +128,7 @@ else:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [(environ.get("REDIS_HOST", "10.40.12.44"),
+                "hosts": [(environ.get("REDIS_HOST", "localhost"),
                            int(environ.get("REDIS_PORT", 6379)))],
             },
         },
