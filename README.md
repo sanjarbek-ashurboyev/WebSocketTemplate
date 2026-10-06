@@ -15,10 +15,10 @@ python manage.py test        # CHANNEL_LAYER=memory runs without Redis
 ## 1. Install
 
 ```bash
-pip uninstall redis
-pip install "redis<8.0"
-pip install channels channels-redis daphne
+pip install -r requirements.txt
 ```
+
+`requirements.txt` pins `redis<8`, which channels-redis needs.
 
 ## 2. settings.py
 
